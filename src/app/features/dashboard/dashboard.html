@@ -1,0 +1,53 @@
+<div class="container-fluid px-4 py-3">
+
+  <!-- Welcome Section -->
+  <div class="mb-4">
+    <h3 class="fw-bold mb-1">Welcome back, Admin</h3>
+    <p class="text-muted mb-0">
+      Here's what's happening with your inventory today.
+    </p>
+  </div>
+
+
+  <!-- Statistics Cards -->
+  <div class="row g-3 mb-4">
+
+  @for (data of statCards; track data.title) {
+
+    <div class="col-12 col-md-6 col-xl-3">
+      <app-stat-card [data]="data"></app-stat-card>
+    </div>
+
+  }
+
+</div>
+
+
+  <!-- Sales & Inventory -->
+  <div class="row g-4 mb-4">
+
+    <div class="col-12 col-xl-7">
+      <app-sales-chart></app-sales-chart>
+    </div>
+
+    <div class="col-12 col-xl-5">
+      <app-inventory-status></app-inventory-status>
+    </div>
+
+  </div>
+
+
+  <!-- Recent Orders & Low Stock -->
+  <div class="row g-4">
+
+    <div class="col-12 col-xl-7">
+      <app-recent-orders></app-recent-orders>
+    </div>
+
+    <div class="col-12 col-xl-5">
+      <app-low-stock-products></app-low-stock-products>
+    </div>
+
+  </div>
+
+</div>

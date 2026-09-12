@@ -1,0 +1,26 @@
+:host {
+	display: block;
+	height: 100dvh;
+	overflow: hidden;
+}
+
+.layout-content {
+	height: calc(100dvh - 66px);
+	min-height: 0;
+}
+
+app-navbar,
+app-sidebar {
+	flex: 0 0 auto;
+}
+
+app-sidebar {
+	height: 100%;
+}
+
+.dashboard-scroll {
+	min-width: 0;
+	min-height: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+}

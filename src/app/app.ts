@@ -1,8 +1,9 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-
+import { NgxSonnerToaster } from 'ngx-sonner';
+import { User } from './features/user/user';
+import { MainLayout } from './layout/main-layout/main-layout';
 @Component({
-  imports: [RouterOutlet],
+  imports: [ MainLayout, NgxSonnerToaster],
   selector: 'app-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',
