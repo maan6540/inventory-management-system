@@ -26,7 +26,7 @@
                   </td>
                 } @else if (tableHeader === 'createdAt') {
                   <td>
-                    {{ row[tableHeader] | date: 'yyyy-mm-dd' }}
+                    {{ row[tableHeader] | date: 'yyyy-MM-dd' }}
                   </td>
                 } @else {
                   <td [class.fw-semibold]="tableHeader === 'id' || tableHeader === 'username'">

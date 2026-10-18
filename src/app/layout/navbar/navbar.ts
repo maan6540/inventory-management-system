@@ -27,7 +27,6 @@ export class Navbar implements OnInit {
           next: (response) => {
             this.roles = response.data;
             this.cdr.detectChanges();
-            console.log(this.roles);
           },
           error: () => {
             this.notification.error('Unable to load available roles.');
