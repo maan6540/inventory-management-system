@@ -42,7 +42,7 @@ export class Navbar implements OnInit {
   }
 
   showRole() {
-    console.log('Roless');
+    console.log('Roles');
   }
 
   logout(): void {
