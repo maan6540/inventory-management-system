@@ -1,19 +1,13 @@
-<div class="card border border-secondary-subtle shadow-sm rounded-3" style="height: 280px;">
+<div class="card border border-secondary-subtle shadow-sm rounded-3" style="height: 280px">
   <div class="card-body">
-
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h5 class="fw-bold mb-0">
-        Recent Orders
-      </h5>
+      <h5 class="fw-bold mb-0">Recent Orders</h5>
 
-      <a href="#" class="text-decoration-none">
-        View All
-      </a>
+      <a href="#" class="text-decoration-none"> View All </a>
     </div>
 
     <div class="table-responsive">
       <table class="table table-hover align-middle mb-0">
-
         <thead>
           <tr>
             <th>Order</th>
@@ -24,55 +18,20 @@
         </thead>
 
         <tbody>
-
-          <tr>
-            <td>#1001</td>
-            <td>Ahmed</td>
-            <td>$450</td>
-            <td>
-              <span class="badge bg-success">
-                Completed
-              </span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>#1002</td>
-            <td>Ali</td>
-            <td>$220</td>
-            <td>
-              <span class="badge bg-warning text-dark">
-                Pending
-              </span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>#1003</td>
-            <td>Hassan</td>
-            <td>$780</td>
-            <td>
-              <span class="badge bg-success">
-                Completed
-              </span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>#1004</td>
-            <td>Usman</td>
-            <td>$320</td>
-            <td>
-              <span class="badge bg-info text-dark">
-                Processing
-              </span>
-            </td>
-          </tr>
-
+          @for (order of orders; track $index) {
+            <tr>
+              <td>#{{ order.orderId }}</td>
+              <td>{{ order.customerName }}</td>
+              <td>{{ order.amount | currency: 'USD' }}</td>
+              <td>
+                <span class="badge" [class]="getStatusBadge(order.status)">
+                  {{ order.status }}
+                </span>
+              </td>
+            </tr>
+          }
         </tbody>
-
       </table>
     </div>
-
   </div>
 </div>

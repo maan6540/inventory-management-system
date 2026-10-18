@@ -1,0 +1,20 @@
+.dropdown-menu-scroll {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.dropdown-toggle {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.dropdown-toggle::after {
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+.dropdown-item {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

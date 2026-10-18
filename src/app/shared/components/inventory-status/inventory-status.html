@@ -1,9 +1,6 @@
-<div class="card border border-secondary-subtle shadow-sm rounded-3" style="height: 250px;">
+<div class="card border border-secondary-subtle shadow-sm rounded-3" style="height: 250px">
   <div class="card-body">
-
-    <h5 class="fw-bold mb-3">
-      Inventory Status
-    </h5>
+    <h5 class="fw-bold mb-3">Inventory Status</h5>
 
     <div class="d-flex justify-content-between align-items-center py-2">
       <span class="text-nowrap">
@@ -11,7 +8,7 @@
         In Stock
       </span>
 
-      <strong>72%</strong>
+      <strong>{{ inventoryStatus.inStockPercentage | percent }}</strong>
     </div>
 
     <div class="d-flex justify-content-between align-items-center py-2">
@@ -20,7 +17,7 @@
         Low Stock
       </span>
 
-      <strong>18%</strong>
+      <strong>{{ inventoryStatus.lowStockPercentage | percent }}</strong>
     </div>
 
     <div class="d-flex justify-content-between align-items-center py-2">
@@ -29,8 +26,7 @@
         Out Stock
       </span>
 
-      <strong>10%</strong>
+      <strong>{{ inventoryStatus.outStockPercentage | percent }}</strong>
     </div>
-
   </div>
 </div>

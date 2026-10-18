@@ -1,10 +1,19 @@
-import { Component } from '@angular/core';
-import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
+import { Component, inject } from '@angular/core';
+import {
+  BaseChartDirective,
+  provideCharts,
+  withDefaultRegisterables
+} from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
+import { FormsModule } from '@angular/forms';
+import { SalesApi } from '../../../../core/api/sales-api';
 
 @Component({
   selector: 'app-sales-chart',
-  imports: [BaseChartDirective],
+  imports: [
+    BaseChartDirective,
+    FormsModule
+  ],
   providers: [
     provideCharts(withDefaultRegisterables())
   ],
@@ -13,40 +22,17 @@ import { ChartConfiguration } from 'chart.js';
 })
 export class SalesChart {
 
+  private salesService = inject(SalesApi);
+
   public lineChartType: 'line' = 'line';
 
-  public lineChartData: ChartConfiguration<'line'>['data'] = {
-    labels: [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec'
-    ],
+  public selectedPeriod: '6months' | 'month' | 'week' = '6months';
 
+  public lineChartData: ChartConfiguration<'line'>['data'] = {
+    labels: [],
     datasets: [
       {
-        data: [
-          12000,
-          14500,
-          13200,
-          16800,
-          18500,
-          21000,
-          19800,
-          23500,
-          25200,
-          24800,
-          27500,
-          31000
-        ],
+        data: [],
         label: 'Sales',
         tension: 0.4,
         fill: true
@@ -60,7 +46,8 @@ export class SalesChart {
 
     plugins: {
       legend: {
-        display: true
+        display: true,
+        position: 'top'
       }
     },
 
@@ -71,4 +58,31 @@ export class SalesChart {
     }
   };
 
+  constructor() {
+    this.loadSalesData();
+  }
+
+  public loadSalesData(): void {
+
+    this.salesService
+      .getSales(this.selectedPeriod)
+      .subscribe({
+        next: (response) => {
+
+          this.lineChartData = {
+            labels: response.labels,
+
+            datasets: [
+              {
+                data: response.data,
+                label: 'Sales',
+                tension: 0.4,
+                fill: true
+              }
+            ]
+          };
+
+        },
+      });
+  }
 }

@@ -1,76 +1,86 @@
-
-    <nav class="navbar navbar-dark bg-dark px-4 shadow-sm" style="height: 66px;">
+<nav class="navbar navbar-dark bg-dark px-4 shadow-sm" style="height: 66px">
   <div class="container-fluid">
-
-    <a class="navbar-brand fw-bold" href="#">
+    <a class="navbar-brand fw-bold" routerLink="">
       <i class="bi bi-box-seam me-2"></i>
       Inventory Management
     </a>
 
     <div class="d-flex align-items-center gap-3">
-
       <!-- Notifications -->
       <button class="btn btn-dark position-relative">
         <i class="bi bi-bell fs-5"></i>
 
         <span
-          class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+          class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+        >
           3
         </span>
       </button>
 
       <!-- User Dropdown -->
       <div class="dropdown">
-
         <button
           class="btn btn-dark dropdown-toggle d-flex align-items-center gap-2"
           type="button"
-          data-bs-toggle="dropdown">
-
+          data-bs-toggle="dropdown"
+        >
           <div
             class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-            style="width: 36px; height: 36px;">
+            style="width: 36px; height: 36px"
+          >
             AD
           </div>
 
-          <span class="d-none d-md-inline">
-            Admin
-          </span>
-
+          <span class="d-none d-md-inline"> {{ (currentUser$ | async)?.role }} </span>
         </button>
-
         <ul class="dropdown-menu dropdown-menu-end shadow">
-
           <li>
-            <a class="dropdown-item" href="#">
+            <a class="dropdown-item" routerLink="/profile">
               <i class="bi bi-person me-2"></i>
               Profile
             </a>
           </li>
 
           <li>
-            <a class="dropdown-item" href="#">
+            <a class="dropdown-item" routerLink="/profilesetting">
               <i class="bi bi-gear me-2"></i>
               Settings
             </a>
           </li>
 
+          @if (isSuperAdmin((currentUser$ | async)?.role)) {
+            <li>
+              <h6 class="dropdown-header">Change role to</h6>
+            </li>
+
+            @for (role of roles; track role.roleId) {
+              <li>
+                <button type="button" class="dropdown-item" (click)="showRole()">
+                  <i class="bi bi-person-gear me-2"></i>
+                  {{ role.roleName }}
+                </button>
+              </li>
+            }
+
+            @if (roles.length === 0) {
+              <li>
+                <span class="dropdown-item-text text-muted"> No roles available </span>
+              </li>
+            }
+          }
+
           <li>
-            <hr class="dropdown-divider">
+            <hr class="dropdown-divider" />
           </li>
 
           <li>
-            <a class="dropdown-item text-danger" href="#">
+            <a class="dropdown-item text-danger" (click)="logout()">
               <i class="bi bi-box-arrow-right me-2"></i>
               Logout
             </a>
           </li>
-
         </ul>
-
       </div>
-
     </div>
-
   </div>
 </nav>

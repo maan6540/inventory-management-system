@@ -1,1 +1,140 @@
-<p>table works!</p>
+<div class="card-body p-0">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          @for (tableHeader of tableHeaders; track $index) {
+            <th>{{ tableHeader | uppercase }}</th>
+          }
+          <th class="text-end px-4">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @if (data.length > 0) {
+          @for (row of data; track $index) {
+            <tr>
+              @for (tableHeader of tableHeaders; track $index) {
+                @if (tableHeader === 'status') {
+                  <td>
+                    <span
+                      class="badge rounded-pill py-2 px-3 fw-semibold"
+                      [ngClass]="getStatusClass(row[tableHeader])"
+                    >
+                      {{ row[tableHeader] }}
+                    </span>
+                  </td>
+                } @else if (tableHeader === 'createdAt') {
+                  <td>
+                    {{ row[tableHeader] | date: 'yyyy-mm-dd' }}
+                  </td>
+                } @else {
+                  <td [class.fw-semibold]="tableHeader === 'id' || tableHeader === 'username'">
+                    {{ row[tableHeader] }}
+                  </td>
+                }
+              }
+
+              <td class="text-end px-4">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-primary me-2"
+                  (click)="onEdit(row)"
+                >
+                  <i class="bi bi-pencil"></i>
+                </button>
+
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="onDelete(row)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        } @else {
+          <tr>
+            <td [attr.colspan]="tableHeaders.length + 1" class="text-center py-5">
+              <div class="text-muted">
+                <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+
+                No records found
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card-footer bg-white border-0">
+  <div class="d-flex justify-content-between align-items-center">
+    <!-- Showing Records -->
+    <span class="text-muted small">
+      @if (data.length > 0) {
+        Showing {{ startRecord }} to {{ endRecord - 1 }} of {{ data.length }}
+      } @else {
+        Showing 0 records
+      }
+    </span>
+    <!-- Pagination -->
+    <div class="d-flex align-items-center gap-2">
+      <!-- Records Per Page -->
+      <select
+        class="form-select form-select-sm"
+        style="width: 70px"
+        [value]="pageSize"
+        (change)="onPageSizeChange($event)"
+      >
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+      </select>
+
+      <nav>
+        <ul class="pagination pagination-sm mb-0">
+          <!-- First -->
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <button type="button" class="page-link" (click)="pageChange.emit(1)">&laquo;</button>
+          </li>
+
+          <!-- Previous -->
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <button type="button" class="page-link" (click)="pageChange.emit(currentPage - 1)">
+              &lsaquo;
+            </button>
+          </li>
+
+          @for (page of visiblePages; track $index) {
+            <li
+              class="page-item"
+              [class.active]="currentPage === page"
+              [class.disable]="page === '...'"
+            >
+              @if (page === '...') {
+                <span class="page-link"> ... </span>
+              } @else {
+                <button type="button" class="page-link" (click)="pageChange.emit(+page)">
+                  {{ page }}
+                </button>
+              }
+            </li>
+          }
+
+          <!-- Next -->
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <button type="button" class="page-link" (click)="pageChange.emit(currentPage + 1)">
+              &rsaquo;
+            </button>
+          </li>
+
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <button type="button" class="page-link" (click)="pageChange.emit(totalPages)">
+              &raquo;
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>

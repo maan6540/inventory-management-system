@@ -1,0 +1,146 @@
+<form [formGroup]="userInfoForm" (ngSubmit)="submit()" method="post">
+  <div class="row g-3">
+    <!-- Full Name -->
+    <div class="col-md-6">
+      <label for="fullName" class="form-label">Full Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="fullName"
+        placeholder="Enter full name"
+        formControlName="userFullname"
+        autocomplete="off"
+      />
+      @if (userFullname?.invalid && userFullname?.touched) {
+        @if (userFullname?.errors?.['required']) {
+          <div class="text-danger small mt-1">Full name is required.</div>
+        }
+        @if (userFullname?.errors?.['pattern']) {
+          <div class="text-danger small mt-1">The name should only contain alphabets.</div>
+        }
+      }
+    </div>
+
+    <!-- Username -->
+    <div class="col-md-6">
+      <label for="username" class="form-label">Username</label>
+      <input
+        type="text"
+        class="form-control"
+        id="username"
+        placeholder="Enter username"
+        formControlName="userName"
+        autocomplete="off"
+      />
+      @if (userName?.invalid && userName?.touched) {
+        @if (userName?.errors?.['required']) {
+          <div class="text-danger small mt-1">Username is required.</div>
+        }
+        @if (userName?.errors?.['pattern']) {
+          <div class="text-danger small mt-1">Username must contain a '.' or number.</div>
+        }
+      }
+    </div>
+    <!-- Email -->
+    <div class="col-md-6">
+      <label for="email" class="form-label">Email</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email"
+        placeholder="Enter email address"
+        formControlName="userEmail"
+        autocomplete="off"
+      />
+
+      @if (userEmail?.touched && userEmail?.invalid) {
+        @if (userEmail?.errors?.['required']) {
+          <div class="text-danger small mt-1">Email is required.</div>
+        }
+        @if (userEmail?.errors?.['email']) {
+          <div class="text-danger small mt-1">Email format is incorrect.</div>
+        }
+      }
+    </div>
+
+    <!-- Password -->
+    @if (!isEditMode) {
+      <div class="col-md-6">
+        <label for="password" class="form-label">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          placeholder="Enter password"
+          formControlName="userPassword"
+          autocomplete="off"
+        />
+        @if (userPassword?.invalid && userPassword?.touched) {
+          @if (userPassword?.errors?.['required']) {
+            <div class="text-danger small mt-1">Password is required.</div>
+          }
+          @if (userPassword?.errors?.['minlength']) {
+            <div class="text-danger small mt-1">Password should have atleast 5 characters.</div>
+          }
+        }
+      </div>
+    } @else {
+      <div class="col-md-6"></div>
+    }
+
+    <!-- Department -->
+    <div class="col-md-4">
+      <label for="department" class="form-label">Department</label>
+      <app-dropdown
+        [options]="departments"
+        labelKey="departmentName"
+        valueKey="departmentId"
+        placeholder="Select department"
+        [selectedValue]="userDepartment?.value"
+        (valueChange)="onDepartmentChange($event)"
+      ></app-dropdown>
+      @if (userDepartment?.invalid && userDepartment?.touched) {
+        <div class="text-danger small mt-1">department is required.</div>
+      }
+    </div>
+
+    <!-- Role -->
+    <div class="col-md-4">
+      <label for="role" class="form-label">Role</label>
+      <app-dropdown
+        [options]="availableRoles"
+        labelKey="roleName"
+        valueKey="roleId"
+        placeholder="Select Role"
+        [selectedValue]="userRole?.value"
+        (valueChange)="onRoleChange($event)"
+      ></app-dropdown>
+      @if (userRole?.invalid && userRole?.touched) {
+        <div class="text-danger small mt-1">Role is required.</div>
+      }
+    </div>
+
+    <!-- Status -->
+    <div class="col-md-4">
+      <label for="status" class="form-label">Status</label>
+      <app-dropdown
+        [options]="status"
+        labelKey="statusName"
+        valueKey="statusId"
+        placeholder="Select Status"
+        [selectedValue]="userStatus?.value"
+        (valueChange)="onStatusChange($event)"
+      ></app-dropdown>
+      @if (userStatus?.invalid && userStatus?.touched) {
+        <div class="text-danger small mt-1">Status is required.</div>
+      }
+    </div>
+  </div>
+  <!-- Buttons -->
+  <div class="col-12 d-flex justify-content-end gap-2 mt-4">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+    <button type="submit" class="btn btn-primary">
+      {{ isEditMode ? 'Update User' : 'Add User' }}
+    </button>
+  </div>
+</form>

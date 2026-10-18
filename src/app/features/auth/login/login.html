@@ -1,0 +1,95 @@
+<div class="min-vh-100 d-flex align-items-center justify-content-center bg-light">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-10 col-md-7 col-lg-5 col-xl-4">
+        <div class="card border-0 shadow">
+          <div class="card-body p-4 p-md-5">
+            <!-- Logo / Brand -->
+            <div class="text-center mb-4">
+              <div class="mb-3">
+                <i class="bi bi-box-seam fs-1 text-primary"></i>
+              </div>
+
+              <h3 class="fw-bold mb-1">Inventory Management</h3>
+              <p class="text-muted mb-0">Sign in to your account</p>
+            </div>
+
+            <!-- Login Form -->
+            <form [formGroup]="loginForm" (ngSubmit)="login()" method="post">
+              <!-- Username -->
+              <div class="mb-3">
+                <label for="username" class="form-label fw-semibold"> Username </label>
+
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-person"></i>
+                  </span>
+
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Enter your username"
+                    formControlName="username"
+                    autocomplete="off"
+                  />
+                </div>
+                @if (username?.errors && username?.touched) {
+                  <div class="text-danger small mt-1">
+                    @if (username?.hasError('required')) {
+                      <div>Username is required.</div>
+                    }
+                    @if (username?.hasError('minlength')) {
+                      <div>Username must be at least 5 characters long.</div>
+                    }
+                  </div>
+                }
+              </div>
+
+              <!-- Password -->
+              <div class="mb-3">
+                <label for="password" class="form-label fw-semibold"> Password </label>
+
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-lock"></i>
+                  </span>
+
+                  <input
+                    type="password"
+                    id="password"
+                    class="form-control"
+                    placeholder="Enter your password"
+                    formControlName="password"
+                    autocomplete="off"
+                  />
+                </div>
+                @if (password?.errors && password?.touched) {
+                  <div class="text-danger small mt-1">
+                    @if (password?.hasError('required')) {
+                      <div>Password is required.</div>
+                    }
+                    @if (username?.hasError('minlength')) {
+                      <div>Password must be at least 5 characters long.</div>
+                    }
+                  </div>
+                }
+              </div>
+
+              <!-- Login Button -->
+              <div class="d-grid">
+                <button class="btn btn-primary">
+                  <i class="bi bi-box-arrow-in-right me-2"></i>
+                  Sign In
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <p class="text-center text-muted small mt-4 mb-0">© 2026 Inventory Management System</p>
+      </div>
+    </div>
+  </div>
+</div>
+```
