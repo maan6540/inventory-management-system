@@ -37,7 +37,13 @@
           <div class="text-danger small mt-1">Username is required.</div>
         }
         @if (userName?.errors?.['pattern']) {
-          <div class="text-danger small mt-1">Username must contain a '.' or number.</div>
+          <div class="text-danger small mt-1">
+            Username must start with a letter and contain only letters, numbers, dots, underscores,
+            or hyphens.
+          </div>
+        }
+        @if (userName?.errors?.['minlength']) {
+          <div class="text-danger small mt-1">Username should have at least 5 characters.</div>
         }
       }
     </div>

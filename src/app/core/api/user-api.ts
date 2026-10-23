@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
+import { skipGlobalLoader } from '../interceptors/loading-context';
 
 export interface UserFilter {
   search?: string;
@@ -30,6 +31,7 @@ export class UserApi {
         ...(filters?.roleId && { roleId: filters.roleId }),
         ...(filters?.statusId && { statusId: filters.statusId }),
       },
+      context: new HttpContext().set(skipGlobalLoader, true),
     });
   }
 

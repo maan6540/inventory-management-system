@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../core/services/auth';
 import { AsyncPipe } from '@angular/common';
-import { Role } from '../../core/api/role';
+import { Role, RoleOption } from '../../core/api/role';
 import { NotificationService } from '../../core/services/notification';
 
 @Component({
@@ -18,11 +18,11 @@ export class Navbar implements OnInit {
   currentUser$ = this.auth.currentUser$;
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
-  roles: any[] = [];
+  roles: RoleOption[] = [];
 
   ngOnInit(): void {
     this.currentUser$.subscribe((user) => {
-      if (this.isSuperAdmin(user?.role) && this.roles.length === 0) {
+      if (user && this.roles.length === 0) {
         this.rolesApi.getRoles().subscribe({
           next: (response) => {
             this.roles = response.data;
@@ -36,12 +36,39 @@ export class Navbar implements OnInit {
     });
   }
 
-  isSuperAdmin(role: string | undefined): boolean {
-    return role?.replace(/\s+/g, '').toLowerCase() === 'superadmin';
+  get availableRoles(): RoleOption[] {
+    const user = this.auth.currentUser;
+
+    if (!user) {
+      return [];
+    }
+
+    const originalRolePriority = user.isRoleSwitched
+      ? this.roles.find((role) => role.roleId === user.originalRoleId)?.priority
+      : user.rolePriority;
+
+    if (originalRolePriority === undefined) {
+      return [];
+    }
+
+    return this.roles.filter(
+      (role) =>
+        role.roleId !== user.roleId &&
+        (role.priority < originalRolePriority ||
+          (user.isRoleSwitched && role.roleId === user.originalRoleId)),
+    );
   }
 
-  showRole() {
-    console.log('Roles');
+  switchRole(role: RoleOption): void {
+    this.auth.switchRole(role.roleId).subscribe({
+      next: () => {
+        this.notification.success(`You are now viewing the ${role.roleName} role.`);
+        void this.router.navigate(['/']);
+      },
+      error: () => {
+        this.notification.error('Unable to switch to the selected role.');
+      },
+    });
   }
 
   logout(): void {

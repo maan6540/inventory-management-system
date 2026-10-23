@@ -6,6 +6,13 @@
     </a>
 
     <div class="d-flex align-items-center gap-3">
+      @if ((currentUser$ | async)?.isRoleSwitched) {
+        <span class="badge rounded-pill bg-warning text-dark">
+          <i class="bi bi-eye me-1"></i>
+          Viewing as {{ (currentUser$ | async)?.role }}
+        </span>
+      }
+
       <!-- Notifications -->
       <button class="btn btn-dark position-relative">
         <i class="bi bi-bell fs-5"></i>
@@ -48,23 +55,17 @@
             </a>
           </li>
 
-          @if (isSuperAdmin((currentUser$ | async)?.role)) {
+          @if (availableRoles.length > 0) {
             <li>
               <h6 class="dropdown-header">Change role to</h6>
             </li>
 
-            @for (role of roles; track role.roleId) {
+            @for (role of availableRoles; track role.roleId) {
               <li>
-                <button type="button" class="dropdown-item" (click)="showRole()">
+                <button type="button" class="dropdown-item" (click)="switchRole(role)">
                   <i class="bi bi-person-gear me-2"></i>
                   {{ role.roleName }}
                 </button>
-              </li>
-            }
-
-            @if (roles.length === 0) {
-              <li>
-                <span class="dropdown-item-text text-muted"> No roles available </span>
               </li>
             }
           }

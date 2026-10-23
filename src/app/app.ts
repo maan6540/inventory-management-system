@@ -3,9 +3,10 @@ import { NgxSonnerToaster } from 'ngx-sonner';
 import { RouterOutlet } from '@angular/router';
 import { Auth } from './core/services/auth';
 import { Modal } from './shared/components/modal/modal';
+import { Loader } from './shared/components/loader/loader';
 
 @Component({
-  imports: [NgxSonnerToaster, RouterOutlet, Modal],
+  imports: [NgxSonnerToaster, RouterOutlet, Modal, Loader],
   selector: 'app-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',

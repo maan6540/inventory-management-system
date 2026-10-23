@@ -137,7 +137,7 @@ resources:
 
 | Resource | Operations |
 | --- | --- |
-| `/auth` | `POST /login`, `GET /me`, `POST /logout` |
+| `/auth` | `POST /login`, `GET /me`, `POST /switch-role`, `POST /logout` |
 | `/Users` | `GET`, `POST`, `PUT /:id`, `DELETE /:id` |
 | `/Roles` | `GET` |
 | `/Departments` | `GET` |
@@ -166,6 +166,32 @@ After login, the client reads `response.data.token`, stores it under the
   }
 }
 ```
+
+Authenticated users can switch to a lower-priority role. A switched user can
+also select their original role from the same role list to return directly to
+that role. The endpoint uses the current bearer token and returns a new token
+together with the effective user context:
+
+```http
+POST /auth/switch-role
+```
+
+```json
+{
+  "roleId": 12
+}
+```
+
+The response data must include `token`, `roleId`, `role`, `rolePriority`,
+`permissions`, `isRoleSwitched`, `originalRoleId`, and `originalRole`. The
+client stores the returned token and uses the returned permissions for its
+sidebar and route guards.
+
+The response must return the same user-context shape with
+`isRoleSwitched: false` when the selected role is the user's original role,
+along with that role's permissions and a replacement token.
+The backend remains responsible for enforcing the effective role on every
+protected request.
 
 ### User listing
 

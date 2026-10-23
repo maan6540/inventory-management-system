@@ -9,10 +9,20 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface AuthResponseData extends CurrentUser {
+  token: string;
+}
+
 export interface MeResponse {
   status: string;
   message: string;
   data: CurrentUser;
+}
+
+export interface AuthResponse {
+  status: string;
+  message: string;
+  data: AuthResponseData;
 }
 
 @Injectable({
@@ -21,12 +31,16 @@ export interface MeResponse {
 export class AuthApi {
   private apiUrl = `${environment.apiUrl}/auth`;
   private http = inject(HttpClient);
-  login(loginrequest: LoginRequest): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, loginrequest);
+  login(loginrequest: LoginRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, loginrequest);
   }
 
   me() {
     return this.http.get<MeResponse>(`${this.apiUrl}/me`);
+  }
+
+  switchRole(roleId: number): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/switch-role`, { roleId });
   }
 
   logout() {

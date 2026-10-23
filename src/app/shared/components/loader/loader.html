@@ -1,0 +1,14 @@
+@if (loading === undefined ? (loading$ | async) : loading) {
+  <div
+    class="loader-backdrop"
+    [class.loader-local]="!fullscreen"
+    role="status"
+    aria-live="polite"
+    aria-label="Loading"
+  >
+    <div class="loader-card">
+      <span class="loader-spinner" aria-hidden="true"></span>
+      <span>Loading...</span>
+    </div>
+  </div>
+}

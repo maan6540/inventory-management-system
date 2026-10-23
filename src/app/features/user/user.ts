@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, inject, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { NotificationService } from '../../core/services/notification';
@@ -10,13 +10,14 @@ import { Table } from '../../shared/components/table/table';
 import { Role } from '../../core/api/role';
 import { Department } from '../../core/api/department';
 import { Status } from '../../core/api/status';
-import { debounceTime, forkJoin, Subject } from 'rxjs';
+import { debounceTime, finalize, forkJoin, Subject } from 'rxjs';
 import { ModalService } from '../../core/services/modal';
 import { Addedituserform } from '../../shared/components/addedituserform/addedituserform';
 import { Delete } from '../../shared/components/delete/delete';
+import { Loader } from '../../shared/components/loader/loader';
 
 @Component({
-  imports: [Dropdown, FormsModule, Table],
+  imports: [Dropdown, FormsModule, Table, Loader],
   selector: 'app-user',
   styleUrl: './user.scss',
   templateUrl: './user.html',
@@ -45,6 +46,8 @@ export class User implements OnInit {
   pageSize = 10;
   totalpages = 0;
   totalItems = 0;
+  isLoadingUsers = signal(false);
+  private userLoadRequestId = 0;
 
   ngOnInit(): void {
     this.loadData();
@@ -52,7 +55,7 @@ export class User implements OnInit {
 
     this.searchSubject.pipe(debounceTime(500)).subscribe(() => {
       this.pageNumber = 1;
-      this.loadUsers();
+      this.loadUsers(true);
     });
   }
 
@@ -113,19 +116,19 @@ export class User implements OnInit {
   onDepartmentSelected(department: any) {
     this.departmentId = department.departmentId;
     this.pageNumber = 1;
-    this.loadUsers();
+    this.loadUsers(true);
   }
 
   onRoleSelected(role: any) {
     this.roleId = role.roleId;
     this.pageNumber = 1;
-    this.loadUsers();
+    this.loadUsers(true);
   }
 
   onStatusSelected(status: any) {
     this.statusId = status.statusId;
     this.pageNumber = 1;
-    this.loadUsers();
+    this.loadUsers(true);
   }
 
   onSearch() {
@@ -134,12 +137,12 @@ export class User implements OnInit {
 
   onPageChange(pageNumber: number) {
     this.pageNumber = pageNumber;
-    this.loadUsers();
+    this.loadUsers(true);
   }
   onPageSizeChange(pageSize: number) {
     this.pageSize = pageSize;
     this.pageNumber = 1;
-    this.loadUsers();
+    this.loadUsers(true);
   }
 
   resetFilters() {
@@ -148,9 +151,10 @@ export class User implements OnInit {
     this.statusId = null;
     this.searchText = null;
 
-    this.loadUsers();
+    this.loadUsers(true);
   }
-  loadUsers(): void {
+  loadUsers(showLoader = false): void {
+    const requestId = ++this.userLoadRequestId;
     const filters: UserFilter = {
       search: this.searchText ?? '',
       departmentId: this.departmentId ?? undefined,
@@ -160,13 +164,24 @@ export class User implements OnInit {
       pageSize: this.pageSize,
     };
 
-    this.userApi.getUsers(filters).subscribe({
-      next: (response) => {
-        this.users = response.data.items;
-        this.totalpages = response.data.totalPages;
-        this.totalItems = response.data.totalItems;
-        this.changeDetector.detectChanges();
-      },
-    });
+    this.isLoadingUsers.set(showLoader);
+    this.userApi
+      .getUsers(filters)
+      .pipe(
+        finalize(() => {
+          if (requestId === this.userLoadRequestId) {
+            this.isLoadingUsers.set(false);
+            this.changeDetector.detectChanges();
+          }
+        }),
+      )
+      .subscribe({
+        next: (response) => {
+          this.users = response.data.items;
+          this.totalpages = response.data.totalPages;
+          this.totalItems = response.data.totalItems;
+          this.changeDetector.detectChanges();
+        },
+      });
   }
 }

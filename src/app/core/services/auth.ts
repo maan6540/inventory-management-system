@@ -48,6 +48,12 @@ export class Auth {
     );
   }
 
+  switchRole(roleId: number) {
+    return this.authApi.switchRole(roleId).pipe(
+      tap((response) => this.setAuthenticatedContext(response.data)),
+    );
+  }
+
   getMe() {
     return this.authApi.me().pipe(
       tap((response) => {
@@ -67,5 +73,11 @@ export class Auth {
 
   expireSession(): void {
     this.logout();
+  }
+
+  private setAuthenticatedContext(response: { token: string } & CurrentUser): void {
+    localStorage.setItem(this.tokenKey, response.token);
+    const { token: _token, ...user } = response;
+    this.currentUserSubject.next(user);
   }
 }

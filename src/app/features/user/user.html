@@ -86,7 +86,8 @@
   </div>
 
   <!-- Users Table -->
-  <div class="card border-0 shadow-sm">
+  <div class="card border-0 shadow-sm position-relative">
+    <app-loader [loading]="isLoadingUsers()" [fullscreen]="false"></app-loader>
     <app-table
       [data]="users"
       [currentPage]="pageNumber"

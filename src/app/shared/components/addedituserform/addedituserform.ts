@@ -16,6 +16,7 @@ import { Status } from '../../../core/api/status';
 import { Dropdown } from '../dropdown/dropdown';
 import { ModalService } from '../../../core/services/modal';
 import { Auth } from '../../../core/services/auth';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   imports: [ɵInternalFormsSharedModule, ReactiveFormsModule, Dropdown],
@@ -97,7 +98,7 @@ export class Addedituserform implements OnInit {
 
     userName: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.pattern(/^(?=.*[0-9.]).+$/)],
+      validators: [Validators.required, Validators.minLength(5), Validators.pattern(/^[A-Za-z][A-Za-z0-9._-]*$/)],
     }),
 
     userEmail: new FormControl('', {
@@ -212,7 +213,8 @@ export class Addedituserform implements OnInit {
       this.userApi.updateUser(this.user.id, user).subscribe({
         next: (response) => {
           this.modalService.complete(response.message);
-        }
+        },
+        error: (error: HttpErrorResponse) => this.handleSubmitError(error),
       });
     } else {
       user.Password = formValue.userPassword;
@@ -220,12 +222,22 @@ export class Addedituserform implements OnInit {
       this.userApi.addUser(user).subscribe({
         next: (response) => {
           this.modalService.complete(response.message);
-        }
+        },
+        error: (error: HttpErrorResponse) => this.handleSubmitError(error),
       });
     }
   }
 
   closeModal() {
     this.modalService.close();
+  }
+
+  private handleSubmitError(error: HttpErrorResponse): void {
+    const message =
+      typeof error.error?.message === 'string'
+        ? error.error.message
+        : 'Unable to save the user. Please try again.';
+
+    this.notification.error(message);
   }
 }
